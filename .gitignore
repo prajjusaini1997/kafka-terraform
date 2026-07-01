@@ -7,7 +7,7 @@ cat > .gitignore <<EOF
 
 # Variables
 *.tfvars
-*.tfvars.json
+!terraform.tfvars
 
 # Logs
 *.log
