@@ -58,14 +58,12 @@ pipeline {
         }
 
         stage('Run Ansible (Kafka Setup)') {
-            steps {
-                sh '''
-                ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
-                '''
-            }
-        }
+    steps {
+        sh '''
+        ansible-playbook -i ansible/inventory.ini ../kafka-role/playbook.yml
+        '''
     }
-
+}
     post {
         success {
             echo "🚀 Kafka Cluster Deployed Successfully (Terraform + Ansible)"
