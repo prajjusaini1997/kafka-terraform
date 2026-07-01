@@ -38,13 +38,9 @@ pipeline {
                 sh '''
                 mkdir -p ansible
 
-                echo "[broker]" > ansible/inventory.ini
+                echo "[tag_kafka]" > ansible/inventory.ini
 
                 terraform output -json kafka_private_ips | jq -r '.[]' >> ansible/inventory.ini
-
-                echo "" >> ansible/inventory.ini
-                echo "[kafka:children]" >> ansible/inventory.ini
-                echo "broker" >> ansible/inventory.ini
 
                 echo "===== Inventory ====="
                 cat ansible/inventory.ini
@@ -68,9 +64,20 @@ pipeline {
         stage('Run Ansible (Kafka Setup)') {
             steps {
                 sh '''
+                cd kafka-role
+
+                echo "===== Current Directory ====="
+                pwd
+
+                echo "===== Files ====="
+                ls -la
+
+                echo "===== ansible.cfg ====="
+                cat ansible.cfg
+
                 ansible-playbook \
-                -i ansible/inventory.ini \
-                kafka-role/playbooks/kafka.yml
+                  -i ../ansible/inventory.ini \
+                  playbooks/kafka.yml
                 '''
             }
         }
