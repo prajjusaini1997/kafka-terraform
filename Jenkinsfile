@@ -51,7 +51,7 @@ pipeline {
         stage('Run Ansible (Kafka Setup)') {
             steps {
                 sh '''
-                ansible-playbook -i ansible/inventory.ini kafka-role/playbook.yml
+                ansible-playbook -i ansible/inventory.ini kafka-role/playbooks/kafka.yml
                 '''
             }
         }
