@@ -1,23 +1,27 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_DEFAULT_REGION = "us-east-1"
+        SSH_KEY = "/var/lib/jenkins/.ssh/ninja_key.pem"
+    }
+
     stages {
 
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Terraform Apply') {
+        stage('Terraform Init & Apply') {
             steps {
                 sh '''
-                set -e
- 
-                ls -lah 
+                    set -e
+                    cd kafka-role   # <-- adjust if terraform root different
 
-                terraform init
-                terraform apply -auto-approve
+                    terraform init
+                    terraform apply -auto-approve
                 '''
             }
         }
@@ -25,11 +29,10 @@ pipeline {
         stage('Generate Ansible Inventory') {
             steps {
                 sh '''
-                set -e
+                    set -e
+                    cd kafka-role
 
-                cd kafka-role
-
-                ansible-inventory -i inventories/aws_ec2.yml --graph
+                    ansible-inventory -i inventories/aws_ec2.yml --graph
                 '''
             }
         }
@@ -37,27 +40,25 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 sh '''
-                set -e
+                    set -e
+                    cd kafka-role
 
-                cd kafka-role
-
-                ansible-playbook \
-                  playbooks/kafka.yml \
-                  -i ../ansible/inventories/aws_ec2.yml \
-                  kafka.yml \
-                  --private-key /var/lib/jenkins/.ssh/ninja_key.pem \
-                  -u ubuntu
+                    ansible-playbook \
+                        -i inventories/aws_ec2.yml \
+                        playbooks/kafka.yml \
+                        --private-key /var/lib/jenkins/.ssh/ninja_key.pem \
+                        -u ubuntu
                 '''
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline finished'
+        success {
+            echo "Pipeline SUCCESS 🚀"
         }
         failure {
-            echo 'Pipeline failed'
+            echo "Pipeline FAILED ❌"
         }
     }
 }
