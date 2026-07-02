@@ -18,7 +18,7 @@ pipeline {
             steps {
                 sh '''
                     set -e
-                    cd kafka-role   # <-- adjust if terraform root different
+                     # IMPORTANT: go to repo root where .tf files exist
 
                     terraform init
                     terraform apply -auto-approve
