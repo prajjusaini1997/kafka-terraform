@@ -69,16 +69,44 @@ pipeline {
             }
         }
 
-        stage('Run Ansible (Kafka Setup)') {
+        stage('Debug Ansible Inventory') {
             steps {
                 sh '''
                 set -e
 
                 cd kafka-role
 
-                echo "===== START ANSIBLE ====="
+                echo "==============================="
+                echo "CURRENT DIRECTORY"
+                pwd
 
-                ansible-playbook -i inventories/aws_ec2.yml playbooks/kafka.yml
+                echo "==============================="
+                echo "FILES"
+                ls -la
+
+                echo "==============================="
+                echo "AWS ID"
+                aws sts get-caller-identity
+
+                echo "==============================="
+                echo "ANSIBLE VERSION"
+                ansible --version
+
+                echo "==============================="
+                echo "INSTALLED COLLECTIONS"
+                ansible-galaxy collection list
+
+                echo "==============================="
+                echo "INVENTORY FILE"
+                cat inventories/aws_ec2.yml
+
+                echo "==============================="
+                echo "INVENTORY GRAPH"
+                ansible-inventory -i inventories/aws_ec2.yml --graph
+
+                echo "==============================="
+                echo "INVENTORY LIST"
+                ansible-inventory -i inventories/aws_ec2.yml --list
                 '''
             }
         }
@@ -86,11 +114,11 @@ pipeline {
 
     post {
         success {
-            echo "✅ PIPELINE SUCCESS - Kafka Infra Ready"
+            echo "DEBUG PIPELINE COMPLETED"
         }
 
         failure {
-            echo "❌ PIPELINE FAILED - Check logs"
+            echo "PIPELINE FAILED - CHECK LOGS"
         }
     }
 }
