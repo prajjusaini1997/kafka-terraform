@@ -1,6 +1,6 @@
 aws_region = "us-east-1"
 
-key_name = "ninja_key.pem"
+key_name = "ninja_key"
 
 public_subnet_cidr = "10.0.1.0/24"
 
