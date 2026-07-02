@@ -101,6 +101,19 @@ pipeline {
                 cat inventories/aws_ec2.yml
 
                 echo "==============================="
+                echo "AWS EC2"
+
+                aws ec2 describe-instances \
+                  --region us-east-1 \
+                  --filters "Name=tag:Role,Values=kafka" \
+                            "Name=instance-state-name,Values=running"
+
+
+                echo "==============================="
+                echo "INVENTORY GRAPH"
+                ansible-inventory -i inventories/aws_ec2.yml --graph
+
+                echo "==============================="
                 echo "INVENTORY GRAPH"
                 ansible-inventory -i inventories/aws_ec2.yml --graph
 
