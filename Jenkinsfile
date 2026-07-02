@@ -12,10 +12,9 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 sh '''
-                set -e 
-                ls -lah
-
-                cd kafka-terraform || exit 1 
+                set -e
+ 
+                ls -lah 
 
                 terraform init
                 terraform apply -auto-approve
