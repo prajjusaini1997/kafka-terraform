@@ -108,18 +108,19 @@ pipeline {
                   --filters "Name=tag:Role,Values=kafka" \
                             "Name=instance-state-name,Values=running"
 
-
                 echo "==============================="
-                echo "INVENTORY GRAPH"
-                ansible-inventory -i inventories/aws_ec2.yml --graph
+                echo "ANSIBLE INVENTORY DEBUG"
 
-                echo "==============================="
-                echo "INVENTORY GRAPH"
-                ansible-inventory -i inventories/aws_ec2.yml --graph
+                ANSIBLE_DEBUG=True ansible-inventory \
+                  -i inventories/aws_ec2.yml \
+                  --graph -vvvv
 
                 echo "==============================="
                 echo "INVENTORY LIST"
-                ansible-inventory -i inventories/aws_ec2.yml --list
+
+                ANSIBLE_DEBUG=True ansible-inventory \
+                  -i inventories/aws_ec2.yml \
+                  --list -vvvv
                 '''
             }
         }
