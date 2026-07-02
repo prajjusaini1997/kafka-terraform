@@ -91,6 +91,6 @@ pipeline {
 
         failure {
             echo "❌ PIPELINE FAILED - Check logs"
-        
-       }
+        }
     }
+}
