@@ -19,23 +19,6 @@ pipeline {
                 echo "===== WORKSPACE ====="
                 pwd
                 ls -la
-                ls -la $WORKSPACE
-                '''
-            }
-        }
-
-        stage('Debug TF Files') {
-            steps {
-                sh '''
-                echo "===== TF FILE DEBUG ====="
-                ls -la
-                find . -name "*.tfvars"
-
-                echo "===== TFVARS CONTENT ====="
-                cat terraform.tfvars || true
-
-                echo "===== TERRAFORM WORKSPACE ====="
-                terraform workspace show || true
                 '''
             }
         }
@@ -72,30 +55,12 @@ pipeline {
             }
         }
 
-        stage('Generate Dynamic Inventory') {
-            steps {
-                sh '''
-                set -e
-
-                mkdir -p ansible
-
-                echo "[tag_kafka]" > ansible/inventory.ini
-
-                terraform output -json kafka_private_ips | jq -r '.[]' >> ansible/inventory.ini
-
-                echo "===== INVENTORY ====="
-                cat ansible/inventory.ini
-                '''
-            }
-        }
-
         stage('Checkout Ansible Repo') {
             steps {
                 sh '''
                 set -e
 
                 rm -rf kafka-role
-
                 git clone https://github.com/prajjusaini1997/kafka-role.git
 
                 echo "===== ANSIBLE REPO ====="
@@ -113,13 +78,10 @@ pipeline {
 
                 echo "===== START ANSIBLE ====="
 
-                ansible-playbook \
-                  -i ../ansible/inventory.ini \
-                  playbooks/kafka.yml
+                ansible-playbook -i inventories/aws_ec2.yml playbooks/kafka.yml
                 '''
             }
         }
-
     }
 
     post {
