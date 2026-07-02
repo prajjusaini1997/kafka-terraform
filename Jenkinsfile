@@ -25,7 +25,10 @@ pipeline {
         stage('Generate Ansible Inventory') {
             steps {
                 sh '''
-                cd ansible
+                set -e
+
+                cd kakfa-role
+
                 ansible-inventory -i inventories/aws_ec2.yml --graph
                 '''
             }
