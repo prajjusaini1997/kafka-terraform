@@ -48,7 +48,7 @@ pipeline {
                     set -e
                     cd kafka-role
 
-                    ansible-playbook -i inventories/aws_ec2.yml playbooks/kafka.yml \
+                    ansible-playbook playbooks/kafka.yml \
                     --private-key /var/lib/jenkins/.ssh/ninja_key.pem \
                     -u ubuntu
                 '''
