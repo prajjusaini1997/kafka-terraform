@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = "us-east-1"
-        SSH_KEY = "/var/lib/jenkins/.ssh/ninja_key.pem"
+        ANSIBLE_HOST_KEY_CHECKING = "False"
     }
 
     stages {
@@ -18,20 +17,26 @@ pipeline {
             steps {
                 sh '''
                     set -e
-                     # IMPORTANT: go to repo root where .tf files exist
-
                     terraform init
                     terraform apply -auto-approve
                 '''
             }
         }
 
-        stage('Generate Ansible Inventory') {
+        stage('Wait for EC2 Ready') {
+            steps {
+                sh '''
+                    echo "Waiting 60 seconds for instances to be ready..."
+                    sleep 60
+                '''
+            }
+        }
+
+        stage('Generate Dynamic Inventory') {
             steps {
                 sh '''
                     set -e
                     cd kafka-role
-
                     ansible-inventory -i inventories/aws_ec2.yml --graph
                 '''
             }
@@ -43,11 +48,9 @@ pipeline {
                     set -e
                     cd kafka-role
 
-                    ansible-playbook \
-                        -i inventories/aws_ec2.yml \
-                        playbooks/kafka.yml \
-                        --private-key /var/lib/jenkins/.ssh/ninja_key.pem \
-                        -u ubuntu
+                    ansible-playbook -i inventories/aws_ec2.yml playbooks/kafka.yml \
+                    --private-key /var/lib/jenkins/.ssh/ninja_key.pem \
+                    -u ubuntu
                 '''
             }
         }
@@ -55,7 +58,7 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline SUCCESS 🚀"
+            echo "Pipeline SUCCESS ✅"
         }
         failure {
             echo "Pipeline FAILED ❌"
