@@ -18,6 +18,7 @@ resource "aws_instance" "bastion" {
 
   tags = {
     Name = "Kafka-Bastion"
+    Role = "bastion"
   }
 }
 
@@ -43,6 +44,7 @@ resource "aws_instance" "kafka1" {
 
   tags = {
     Name = "Kafka-Broker-1"
+    Role = "kafka"
   }
 }
 
@@ -69,6 +71,7 @@ resource "aws_instance" "kafka2" {
 
   tags = {
     Name = "Kafka-Broker-2"
+    Role = "kafka"
   }
 }
 
@@ -96,6 +99,7 @@ resource "aws_instance" "kafka3" {
 
   tags = {
     Name = "Kafka-Broker-3"
+    Role = "kafka"
   }
 }
 
