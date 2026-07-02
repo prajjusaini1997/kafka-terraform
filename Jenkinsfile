@@ -27,7 +27,7 @@ pipeline {
                 sh '''
                 set -e
 
-                cd kakfa-role
+                cd kafka-role
 
                 ansible-inventory -i inventories/aws_ec2.yml --graph
                 '''
