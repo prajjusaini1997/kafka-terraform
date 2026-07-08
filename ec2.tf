@@ -43,8 +43,9 @@ resource "aws_instance" "kafka1" {
   user_data = file("user-data.sh")
 
   tags = {
-    Name = "Kafka-Broker-1"
-    Role = "kafka"
+    Name      = "Kafka-Broker-1"
+    Role      = "kafka"
+    ManagedBy = "terraform"
   }
 }
 
@@ -70,10 +71,12 @@ resource "aws_instance" "kafka2" {
   user_data = file("user-data.sh")
 
   tags = {
-    Name = "Kafka-Broker-2"
-    Role = "kafka"
+    Name      = "Kafka-Broker-2"
+    Role      = "kafka"
+    ManagedBy = "terraform"
   }
 }
+
 
 
 
@@ -98,8 +101,9 @@ resource "aws_instance" "kafka3" {
   user_data = file("user-data.sh")
 
   tags = {
-    Name = "Kafka-Broker-3"
-    Role = "kafka"
+    Name    = "Kafka-Broker-3"
+    Role    = "kafka"
+    ManagedBy = "terraform"
   }
 }
 
